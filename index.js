@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const fetch = require('node-fetch');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -41,11 +42,13 @@ app.post('/', (req, res) => {
     let requestLink = process.env.BASEURL + query;
     requestLink = requestLink.replace(" ", "+")
 
-    rp(requestLink)
+    fetch(requestLink)
+        .then(res => res.text())
         .then(html => {
             const ci1 = cheerio.load(html);
             const lyricLink = ci1('td')[0].children[1].attribs.href;
-            rp(lyricLink)
+            fetch(lyricLink)
+                .then(res => res.text())
                 .then(lyricData => {
                     const ci2 = cheerio.load(lyricData);
                     let lyricDiv = ci2('.col-xs-12.col-lg-8.text-center');
