@@ -42,13 +42,21 @@ app.post('/', (req, res) => {
     let requestLink = process.env.BASEURL + query;
     requestLink = requestLink.replace(" ", "+")
 
-    fetch(requestLink)
-        .then(res => res.text())
+    rp({
+        uri: requestLink,
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36'
+        },
+    })
         .then(html => {
             const ci1 = cheerio.load(html);
             const lyricLink = ci1('td')[0].children[1].attribs.href;
-            fetch(lyricLink)
-                .then(res => res.text())
+            rp({
+                uri: lyricLink,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36'
+                },
+            })
                 .then(lyricData => {
                     const ci2 = cheerio.load(lyricData);
                     let lyricDiv = ci2('.col-xs-12.col-lg-8.text-center');
